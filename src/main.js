@@ -1,165 +1,76 @@
-import { getArticles } from "./js/pixabay-api";
-// import { imageTemplate } from 
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import 'simple-lightbox/dist/simpleLightbox.min.css';
+import { fetchImages } from './js/pixabay-api';
+import { renderImages } from './js/render-functions';
+export const galleryList = document.querySelector('ul.gallery');
+export let query = '';
+const inputQuery = document.getElementById('search-input');
+export let page = 1;
+export let limit = 15;
+export const loadButton = document.getElementById('load-button');
+export const loaderDiv = document.getElementById('loader');
+inputQuery.addEventListener('input', e => {
+  query = inputQuery.value.trim();
 
-// import iziToast from 'izitoast';
-// import 'izitoast/dist/css/iziToast.min.css';
+  galleryList.innerHTML = '';
+  loadButton.className = 'visually-hidden';
+  loaderDiv.className = 'visually-hidden';
+});
 
-// import SimpleLightbox from 'simplelightbox';
-// import 'simplelightbox/dist/simple-lightbox.min.css';
+const searchButton = document.getElementById('search-button');
 
-// import { getImage } from './js/pixabay-api';
-
-
- export const imgGallery = document.querySelector('.gallery');
-
- export const formEl = document.querySelector('.form');
-
- const btnLoadMore =  document.querySelector('.js-btn-load')
-
- let query;
- let currentPage = 1;
-
- formEl.addEventListener('submit', onFormSubmit)
- btnLoadMore.addEventListener ('click', onLoadMoreClick) 
-
- async function onFormSubmit (event) {
-    event.preventDefault();
-
-    query = event.target.elements.image.value.trim();
-    imgGallery.innerHTML = '';
-
-    const data = await getArticles(query, currentPage);
-
-    renderArticles(data.articles);
-    showLoadMore();
-}
-
-async function onLoadMoreClick () {
-    currentPage += 1;
-
-    const data = await getArticles(query, currentPage);
-    
-    renderArticles(data.articles);
-    showLoadMore();
-}
-
-function showLoadMore() {
-    btnLoadMore.classList.remove('hidden');
+searchButton.addEventListener('click', async () => {
+  galleryList.innerHTML = '';
+  loaderDiv.className = 'loader';
+  page = 1;
+  limit = 15;
+  try {
+    if (query) {
+      loadButton.className = '';
+      const posts = await fetchImages(query);
+      renderImages(posts);
+      loaderDiv.className = 'loader visually-hidden';
+      page += 1;
+    }
+  } catch (error) {
+    loadButton.className = 'visually-hidden';
+    console.log(error);
+    iziToast.error({
+      title: 'Error',
+      message: `Виникла помилка під час завантаження зображень. Будь ласка, спробуйте пізніше.`,
+      position: 'topRight',
+    });
   }
-function hideLoadMore() {
-    btnLoadMore.classList.add('hidden');
+});
+
+loadButton.addEventListener('click', async () => {
+  loaderDiv.className = 'loader';
+  try {
+    if (query) {
+      const posts = await fetchImages(query);
+      const totalItems = posts.totalHits;
+      const currentPageItems =
+        document.querySelectorAll('.gallery-item').length;
+      if (currentPageItems >= totalItems) {
+        loadButton.className = 'visually-hidden';
+        loaderDiv.className = 'visually-hidden';
+        return iziToast.error({
+          title: 'Error',
+          message: `We're sorry, but you've reached the end of search results.`,
+          position: 'topRight',
+        });
+      }
+      renderImages(posts);
+      loaderDiv.className = 'loader visually-hidden';
+      page += 1;
+    }
+  } catch (error) {
+    console.log(error);
+    iziToast.error({
+      title: 'Error',
+      message: `Виникла помилка під час завантаження зображень. Будь ласка, спробуйте пізніше.`,
+      position: 'topRight',
+    });
   }
-
-
-
-function articleTemplate (obj) {
-    const { urlToImage, title, description, author, publishedAt, url } = obj;
-    return  `
-    <li class="gallery-item">
-           <a class="gallery-link" href="${url}">
-             <img
-               class="gallery-image"
-               src="${urlToImage}"
-               data-source="${url}"
-               alt="${description}"
-             />
-             </a>
-             <ul class="gallery-description">
-             <li><h3>Views</h3><p>${title}</p>
-               </li>
-                 <li><h3>Downloads</h3><p>${publishedAt}</p>
-                   </li>
-             </ul>
-           </li>`
-}
-
-
-function articlesTemplate (arr) {
-    return arr.map(articleTemplate).join();
-}
-
-function renderArticles (arr) {
- const markup = articlesTemplate(arr);
- imgGallery.insertAdjacentHTML('beforeend', markup);
-}
-
-
-// `<li class="gallery-item">
-//       <img
-//         loading="lazy"
-//         class="gallery-image"
-//         src="${urlToImage}"
-//         alt="${title}"
-//       />
-//       <h3 class="card-title">${title}</h3>
-//       <p class="card-desc">${description}</p>
-//       <div class="card-footer">
-//         <span>${author}</span>
-//         <span>${publishedAt}</span>
-//       </div>
-// </li>`;
-
-
-
-
-
-
-
-
-
-// const loader = document.querySelector('.loader');
-
-// function hideLoader() {
-//     loader.classList.add("hidden");
-// }
-// function showLoader() {
-//     loader.classList.remove("hidden");
-// }
-// const galleryCfg = {
-//         captionsData: 'alt',
-//       };
-//       let lightbox = new SimpleLightbox('.gallery a', galleryCfg);
-//       lightbox.on('show.simplelightbox', function () {});
-
-//       hideLoader();
-
- 
-
-
-
-
-//     const inputValue = event.currentTarget.elements.image.value.trim();
-//     imgGallery.innerHTML = '<div class="loader"></div>';
-
-//     getImage(inputValue).then(data =>{
-//         hideLoader();
-//       const markup = imageTemplate(data.hits);
-//        imgGallery.innerHTML = markup; 
-//        lightbox.refresh();
-//        if (data.hits.length === 0) {
-//         iziToast.error({
-//             maxWidth: '432px',
-//             height: '48px',
-//             color: 'red',
-//             position: 'topRight',
-//             message: "Sorry, there are no images matching your search query. Please try again!",
-
-
-
-//     }
-      
-//     })
-//     .catch(error => {
-
-//         iziToast.error({
-//           maxWidth: '432px',
-//           height: '48px',
-//           color: 'red',
-//           position: 'topRight',
-//           message: "Sorry, there are no images matching your search query. Please try again!",
-//         })
-//           })
-//   .finally(() => {       
-//     formEl.reset()
-//   });
-//   });
+});

@@ -1,38 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vanilla App Template</title>
+    <title>JS HW 12</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
     <link rel="stylesheet" href="./css/styles.css" />
+    <link href="
+    https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.css
+    " rel="stylesheet">
   </head>
   <body>
-    <div class="container">
-         
-      <form class="form">
-        <label  class="label-form" for = "image-inp"></label>
-          <input class="input-form" type="text" name="image" id="image-inp" placeholder="Search images..."  required />
-        <button class="btn-submit" type="submit">Search</button>
-      </form>
+   
 
-      <!-- <div class="loader">
-      </div> -->
-
-      <ul class="gallery"></ul>
-
-      <div>
-        <button
-          type="button"
-          class="btn btn-primary button js-btn-load hidden"
-          data-action="load-more"
-        >
-          <span class="label">Load more</span>
-        </button>
-        
-      </div>
+    <div class="search-bar"> <input type="text" placeholder="Search images..." id="search-input" />
+      <button type="button" id="search-button">Search</button>
     </div>
+    <ul class="gallery"></ul><br>
+    <div class="loader visually-hidden" id="loader"></div><br>
+    <button type="button" id="load-button" class="visually-hidden">Load more</button>
+
     
+    
+
     <script type="module" src="./main.js"></script>
   </body>
 </html>
