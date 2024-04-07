@@ -1,6 +1,6 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import 'simple-lightbox/dist/simpleLightbox.min.css';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './js/pixabay-api';
 import { renderImages } from './js/render-functions';
 export const galleryList = document.querySelector('ul.gallery');

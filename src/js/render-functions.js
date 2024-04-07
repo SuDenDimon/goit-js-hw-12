@@ -1,5 +1,5 @@
-import SimpleLightbox from 'simple-lightbox';
-import 'simple-lightbox/dist/simpleLightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import { galleryList, loadButton } from '../main';
@@ -48,6 +48,6 @@ export async function renderImages(data) {
     captionsData: 'alt',
   };
   let lightbox = new SimpleLightbox('.gallery a', galleryCfg);
-  lightbox.on('show.simple-lightbox', function () {});
+  lightbox.on('show.simplelightbox', function () {});
   lightbox.refresh();
 }
