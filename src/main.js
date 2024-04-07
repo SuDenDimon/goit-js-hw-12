@@ -28,8 +28,8 @@ searchButton.addEventListener('click', async () => {
   try {
     if (query) {
       loadButton.className = '';
-      const posts = await fetchImages(query);
-      renderImages(posts);
+      const imageResults = await fetchImages(query);
+      renderImages(imageResults);
       loaderDiv.className = 'loader visually-hidden';
       page += 1;
     }
@@ -48,8 +48,8 @@ loadButton.addEventListener('click', async () => {
   loaderDiv.className = 'loader';
   try {
     if (query) {
-      const posts = await fetchImages(query);
-      const totalItems = posts.totalHits;
+      const imageResults = await fetchImages(query);
+      const totalItems = imageResults.totalHits;
       const currentPageItems =
         document.querySelectorAll('.gallery-item').length;
       if (currentPageItems >= totalItems) {
@@ -61,7 +61,7 @@ loadButton.addEventListener('click', async () => {
           position: 'topRight',
         });
       }
-      renderImages(posts);
+      renderImages(imageResults);
       loaderDiv.className = 'loader visually-hidden';
       page += 1;
     }

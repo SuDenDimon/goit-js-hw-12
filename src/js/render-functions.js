@@ -48,4 +48,6 @@ export async function renderImages(data) {
     captionsData: 'alt',
   };
   let lightbox = new SimpleLightbox('.gallery a', galleryCfg);
+  lightbox.on('show.simple-lightbox', function () {});
+  lightbox.refresh();
 }
