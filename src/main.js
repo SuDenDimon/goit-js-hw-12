@@ -15,8 +15,14 @@ inputQuery.addEventListener('input', e => {
 
   galleryList.innerHTML = '';
   loadButton.className = 'visually-hidden';
-  loaderDiv.className = 'visually-hidden';
 });
+
+function hideLoader() {
+  loaderDiv.classList.add('visually-hidden');
+}
+function showLoader() {
+  loaderDiv.classList.remove('visually-hidden');
+}
 
 const searchButton = document.getElementById('search-button');
 
@@ -30,7 +36,7 @@ searchButton.addEventListener('click', async () => {
       loadButton.className = '';
       const imageResults = await fetchImages(query);
       renderImages(imageResults);
-      loaderDiv.className = 'loader visually-hidden';
+      hideLoader();
       page += 1;
     }
   } catch (error) {
@@ -62,7 +68,7 @@ loadButton.addEventListener('click', async () => {
         });
       }
       renderImages(imageResults);
-      loaderDiv.className = 'loader visually-hidden';
+      hideLoader();
       page += 1;
     }
   } catch (error) {
