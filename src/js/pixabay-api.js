@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function getImage(inputValue) {
+export async function getImage(inputValue, currentPage) {
     const BASE_URL = 'https://pixabay.com';
     const END_POINT = '/api/';
     const params = new URLSearchParams({
@@ -9,11 +9,13 @@ export function getImage(inputValue) {
       image_type: "photo",
       orientation: "horizontal",
       safesearch: true,
+      per_page: 15,
+      page: currentPage,
     });
 
 const url = `${BASE_URL}${END_POINT}?${params}`;
 
-return axios.get(url)
+return await axios.get(url)
 .then(responce => {
     
 return responce.data;

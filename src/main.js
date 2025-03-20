@@ -28,7 +28,7 @@ const galleryCfg = {
 
 refs.form.addEventListener("submit", onFormSubmit);
 
-function onFormSubmit(e) {
+async function onFormSubmit(e) {
     e.preventDefault();
     refs.gallery.innerHTML = "";
 
@@ -39,7 +39,12 @@ function onFormSubmit(e) {
         return;
     }
         showLoader();
-    
+
+        
+    //Остановился здесь
+
+
+
     getImage(inputValue).then(data => { 
 
         const markUp = createImagesCard(data.hits);
