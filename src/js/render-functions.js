@@ -1,7 +1,16 @@
 export function createImagesCard(images) {
   return images
-    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
-      return `
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        return `
     <li class="gallery-item">
             <a class="gallery-link" href="${largeImageURL}">
                 <img
@@ -20,10 +29,11 @@ export function createImagesCard(images) {
               </ul>
             </a>
         </li>`;
-    })
-    .join("");
+      }
+    )
+    .join('');
 }
 
-export function clearGallery (element) {
-  element.innerHTML = "";
+export function clearGallery(element) {
+  element.innerHTML = '';
 }
