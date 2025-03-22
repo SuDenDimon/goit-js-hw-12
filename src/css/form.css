@@ -33,4 +33,8 @@ button {
     letter-spacing: 0.04em;
     color: #fff;
 }
+.load-more-btn {
+    display: block;
+    margin: 0 auto;
+}
 

@@ -5,72 +5,117 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
 import { getImage } from './js/pixabay-api';
-import { createImagesCard } from './js/render-functions';
+import { createImagesCard, clearGallery } from './js/render-functions';
+
+let page = 1;
+let inputValue = ""; 
 
 const refs = {
     form: document.querySelector(".form"),
     gallery: document.querySelector(".gallery"),
-    loader: document.querySelector('.loader'),
+    loader: document.querySelector(".loader"),
+    loadMoreBtn: document.querySelector('.load-more-btn'),
 }
 
-function hideLoader() {
-    refs.loader.classList.add("hidden");
+function hideElement(element) {
+    element.classList.add("hidden");
+    
 }
-function showLoader() {
-    refs.loader.classList.remove("hidden");
+function showElement(element) {
+    element.classList.remove("hidden");
 }
 
-const galleryCfg = {
-    captionsData: 'alt',
-  };
-  let lightbox = new SimpleLightbox('.gallery a', galleryCfg);
-    hideLoader();
+let lightbox = new SimpleLightbox('.gallery a', {captionsData: 'alt'});
 
 refs.form.addEventListener("submit", onFormSubmit);
+refs.loadMoreBtn.addEventListener("click", onLoadMoreBtnClick);
 
 async function onFormSubmit(e) {
     e.preventDefault();
-    refs.gallery.innerHTML = "";
-
+    clearGallery(refs.gallery);
+    hideElement(refs.loadMoreBtn);
+    page = 1;
     const form = e.currentTarget;
-    const inputValue = form.elements.searchInput.value;
+    inputValue = form.elements.searchInput.value.trim();
 
     if (inputValue === "") {
+        iziToast.info({
+            position: 'topRight',
+            color: 'red',
+            message: "Enter something for search!",
+        });
         return;
     }
-        showLoader();
+        showElement(refs.loader);
 
-        
-    //Остановился здесь
+    try {
+        const data = await getImage(inputValue, page);
 
-
-
-    getImage(inputValue).then(data => { 
+        if (data.hits.length === 0) {
+            iziToast.info({
+                position: 'topRight',
+                color: 'red',
+                message: "Sorry, there are no images matching your search query. Please try again!",
+            });
+            return;
+        }
 
         const markUp = createImagesCard(data.hits);
         refs.gallery.insertAdjacentHTML("beforeend", markUp);
-
         lightbox.refresh();
 
-        if (data.hits.length === 0) {
-            iziToast.show({
-                maxWidth: '432px',
-                height: '48px',
-                color: 'red',
-                position: 'topRight',
-                message: "Sorry, there are no images matching your search query. Please try again!",
-            });
+        if (data.totalHits <= 15) {
+            hideElement(refs.loadMoreBtn);
+            iziToast.info({message: "We're sorry, but you've reached the end of search results.", color: 'red'})
+        } else {
+            showElement(refs.loadMoreBtn);
         }
-    }).catch(error => {
-        iziToast.show({
-                maxWidth: '432px',
-                height: '48px',
-                color: 'red',
-                position: 'topRight',
-                message: "Sorry, there are no images matching your search query. Please try again!",
-    }); 
-}).finally(() => {   
-    hideLoader();    
+
+    } catch (error) {
+        iziToast.error({
+            color: 'red',
+            position: 'topRight',
+            message: "Something went wrong!!!",
+}) 
+    } finally {
+        hideElement(refs.loader);    
     refs.form.reset();
-  });
+}}
+
+async function onLoadMoreBtnClick () {
+    page += 1;
+    
+    showElement(refs.loader);
+
+    try {
+        const data = await getImage(inputValue, page);
+        const markUp = createImagesCard(data.hits);
+        refs.gallery.insertAdjacentHTML("beforeend", markUp);
+        lightbox.refresh();
+
+        let elem = document.querySelector(".gallery-item");
+        let elemHeight = elem.getBoundingClientRect().height;
+        
+        window.scrollBy({
+            top: elemHeight * 2,
+            behavior: "smooth",
+          });
+
+        const lastPage = Math.ceil(data.totalHits/15);
+
+        if (page === lastPage) {
+            hideElement(refs.loadMoreBtn);
+            iziToast.info({message: "We're sorry, but you've reached the end of search results."})
+        } else {
+            showElement(refs.loadMoreBtn);
+        }
+
+    } catch (error) {
+        iziToast.error({
+            position: 'topRight',
+            message: "Something went wrong!!!",
+}) 
+} finally {
+    hideElement(refs.loader);
+}
 }

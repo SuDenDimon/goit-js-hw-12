@@ -23,3 +23,7 @@ export function createImagesCard(images) {
     })
     .join("");
 }
+
+export function clearGallery (element) {
+  element.innerHTML = "";
+}
