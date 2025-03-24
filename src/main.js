@@ -1,11 +1,11 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+// import SimpleLightbox from 'simplelightbox';
+// import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import { getImage } from './js/pixabay-api';
-import { createImagesCard, clearGallery } from './js/render-functions';
+import { createImagesCard, clearGallery, lightbox } from './js/render-functions';
 
 let page = 1;
 let inputValue = '';
@@ -24,7 +24,7 @@ function showElement(element) {
   element.classList.remove('hidden');
 }
 
-let lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt' });
+// let lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt' });
 
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
